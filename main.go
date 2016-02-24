@@ -19,13 +19,13 @@ func main() {
 	switch {
 	// some test cases to check the mappings is working as expected
 	case ar.GetValue("query.ret") == "503":
-		ar.ExitOnErr("regex503", "invalid input request")
+		ar.ExitOnErr("regex503", "invalid input request", "ret=503 detected")
 	case ar.GetValue("query.ret") == "404":
-		ar.ExitOnErr("notFound", "requested object not found")
+		ar.ExitOnErr("regex404", "requested object not found", "")
 	case ar.GetValue("query.redir") == "123":
 		ar.Redirect302("https://www.google.com/")
 	case ar.GetValue("query.redir") == "456":
-		ar.Redirect302("https://www.golang.org/")
+		ar.Redirect302("https://www.ibm.com/")
 	case ar.GetValue("query.type") == "all":
 		if b, err := ar.GetJSON(); err != nil {
 			fmt.Printf(" ")

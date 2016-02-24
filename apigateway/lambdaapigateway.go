@@ -116,7 +116,10 @@ type Response struct {
 // ExitOnErr will create a json error required by api-gateway and the exit
 // This will be detected by api-gateway and it will send the correct
 // response back to the remote client
-func (ar *apiRequest) ExitOnErr(code, msg string) {
+// code = apigateway regex code to map to response value
+// msg = message to return to remote client
+// lamerr = error to log to Lambda logs
+func (ar *apiRequest) ExitOnErr(code, msg, lamerr string) {
 	r := &Response{
 		Code:    code,
 		Message: msg,
@@ -125,8 +128,15 @@ func (ar *apiRequest) ExitOnErr(code, msg string) {
 	if err != nil {
 		fmt.Printf("error with json marshal: %v\n", err)
 	} else {
+		//
 		os.Stdout.Write(b)
 	}
+
+	if lamerr != "" {
+		// if provided then log info to lambda logs
+		os.Stderr.Write([]byte(lamerr))
+	}
+
 	// exit > 1 to ensure wrapper passes to api-gateway as error and is mapped to a response
 	os.Exit(2)
 }
